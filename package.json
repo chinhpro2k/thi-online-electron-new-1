@@ -1,7 +1,7 @@
 {
   "name": "thi-online-ptit-by-aisoft",
   "appId": "org.electron.thi-online",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "buildVersion": "0004",
   "private": false,
   "main": "dist/main/main.js",
@@ -9,11 +9,14 @@
   "scripts": {
     "ts:dev": "ts-node -P build/tsconfig.json build/tasks/dev-server.ts",
     "ts:build": "ts-node -P build/tsconfig.json build/tasks/build.ts",
+    "ts:build:publish": "ts-node -P build/tsconfig.json build/tasks/build-publish.ts",
     "dev": "cross-env NODE_ENV=development BUILD_ENV=dev npm run ts:dev",
     "prod": "cross-env NODE_ENV=production BUILD_ENV=prod npm run ts:dev",
     "build:dev": "cross-env NODE_ENV=production BUILD_ENV=dev npm run ts:build",
     "build": "cross-env NODE_ENV=production BUILD_ENV=prod npm run ts:build",
-    "build:publish": "set GH_TOKEN=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 && react-scripts build && electron-builder --win --publish always"
+    "build:publish": "set GH_TOKEN=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 && cross-env NODE_ENV=production BUILD_ENV=prod npm run ts:build:publish",
+    "release": "electron-builder",
+    "publish": "set GH_TOKEN=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 && electron-builder --win --publish always"
   },
   "devDependencies": {
     "@babel/runtime": "^7.13.10",
@@ -37,8 +40,10 @@
     "@types/webpackbar": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
+    "ajv": "^8.11.0",
     "antd": "^4.15.0",
     "bindings-loader": "^0.1.0",
+    "picocolors": "^1.0.0",
     "classnames": "^2.2.6",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "^7.0.3",
@@ -76,10 +81,36 @@
     "webpack-node-externals": "^3.0.0",
     "webpackbar": "^4.0.0"
   },
+  "build": {
+    "appId": "org.electron.thi-online",
+    "productName": "thi-online-ptit",
+    "directories": {
+      "output": "thi-online-ptit-release",
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "assets/app-icon/icon/icon.ico"
+    },
+    "mac": {
+      "icon": "assets/app-icon/icon/icon.icns",
+      "target": [
+        "dmg"
+      ]
+    },
+    "linux": {
+      "icon": "assets/app-icon/icon/icon.ico",
+      "target": [
+        "deb",
+        "rpm",
+        "AppImage"
+      ],
+      "category": "Development"
+    }
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lanten/electron-antd.git"
+    "url": "git+https://github.com/chinhpro2k/thi-online-electron-new-1"
   },
   "bugs": {
     "url": "https://github.com/lanten/electron-antd/issues"
@@ -93,8 +124,9 @@
     "axios": "^0.21.1",
     "chalk": "^4.1.0",
     "drivelist": "^9.2.4",
+    "electron-is-dev": "^2.0.0",
     "electron-log": "^4.3.2",
-    "electron-updater": "^4.3.9",
+    "electron-updater": "^4.6.5",
     "face-api.js": "^0.22.2",
     "humps": "^2.0.1",
     "iohook": "^0.9.3",
@@ -109,6 +141,7 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
+    "react-scripts": "^5.0.1",
     "react-sticky": "^6.0.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",

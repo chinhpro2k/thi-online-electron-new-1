@@ -7,10 +7,8 @@ import path from 'path';
 import { Configuration, CliOptions } from 'electron-builder';
 import buildConfig from './config';
 
-const rootPath = process.cwd();
-
-const ICON_ICO = path.resolve(rootPath, 'assets/app-icon/icon/icon.ico');
-const ICON_ICNS = path.resolve(rootPath, 'assets/app-icon/icon/icon.icns');
+const ICON_ICO = path.resolve(__dirname, '../assets/app-icon/icon/icon.ico');
+const ICON_ICNS = path.resolve(__dirname, '../assets/app-icon/icon/icon.icns');
 
 const {
   npm_package_name: productName,
@@ -27,21 +25,17 @@ const config: Configuration = {
   asar: false,
   directories: {
     buildResources: 'assets',
-    output: path.join(
-      buildConfig.release,
-      `${productName}-release-${version}.${buildVersion}`
-    ),
+    output: path.join(buildConfig.release, `${productName}-release`),
   },
   win: {
     icon: ICON_ICO,
-    target: ['nsis', 'msi'],
+    target: ['nsis', 'msi', 'portable'],
     publish: [
       {
         provider: 'github',
-        repo: 'thi-online-electron-antd',
+        repo: 'thi-online-electron-new-1',
         protocol: 'https',
         owner: 'chinhpro2k',
-        token: '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',
         host: 'github.com',
         releaseType: 'draft',
       },
@@ -60,16 +54,19 @@ const config: Configuration = {
   linux: {
     icon: ICON_ICNS,
     target: ['deb', 'rpm', 'AppImage'],
-    category: 'Development',
+    category: 'Education',
+    maintainer: 'AISoft',
+    executableName: 'Thi Online',
+    synopsis: 'Ứng dụng thi trực tuyến',
   },
   publish: [
     {
       provider: 'github',
-      repo: 'thi-online-electron-antd',
+      repo: 'thi-online-electron-new-1',
       protocol: 'https',
       owner: 'chinhpro2k',
-      token: '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',
       host: 'github.com',
+      token: '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',
       releaseType: 'draft',
     },
   ],

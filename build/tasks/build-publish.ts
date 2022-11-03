@@ -1,9 +1,9 @@
-import pc from 'picocolors';
+import chalk from 'chalk';
 import path from 'path';
 import { build as electronBuilder } from 'electron-builder';
 import { clearDir, exConsole } from '../utils';
 
-import builderConfig from '../builder.config';
+import builderConfig from '../builderpublish.config';
 import buildConfig from '../config';
 import webpackConfigMain from '../webpack.config.main';
 import webpackConfigRenderer from '../webpack.config.renderer';
@@ -18,8 +18,8 @@ async function buildMain() {
     type: 'main',
   }).then(() => {
     exConsole.success(
-      `[Main Complete] : ${pc.underline(
-        pc.magenta(path.resolve(buildConfig.dist, 'main'))
+      `[Main Complete] : ${chalk.magenta.underline(
+        path.resolve(buildConfig.dist, 'main')
       )}`
     );
   });
@@ -32,8 +32,8 @@ async function buildRenderer() {
     type: 'renderer',
   }).then(() => {
     exConsole.success(
-      `[Renderer Complete] : ${pc.underline(
-        pc.magenta(path.resolve(buildConfig.dist, 'renderer'))
+      `[Renderer Complete] : ${chalk.magenta.underline(
+        path.resolve(buildConfig.dist, 'renderer')
       )}`
     );
   });
@@ -41,12 +41,16 @@ async function buildRenderer() {
 
 function build() {
   const { dist } = buildConfig;
-  exConsole.info(`[Clear Dir...] : ${buildConfig.dist}`);
+  exConsole.info(
+    chalk.cyanBright(
+      `[Clear Dir...] : ${chalk.magenta.underline(buildConfig.dist)}`
+    )
+  );
 
   try {
     clearDir(dist, false, true);
   } catch (error) {
-    exConsole.warn(error.message);
+    exConsole.warn((error as Error).message);
   }
 
   exConsole.info(`[Building...] : ${env} : ${process.env.NODE_ENV}`);

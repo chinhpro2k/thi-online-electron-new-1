@@ -33,3 +33,4 @@ package-lock.json
 .project
 *.log
 *.dat
+release*

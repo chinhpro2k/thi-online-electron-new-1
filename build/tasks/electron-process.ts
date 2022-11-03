@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import pc from 'picocolors';
 import electron from 'electron';
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import { exConsole } from '../utils';
@@ -21,7 +21,7 @@ export default class ElectronProcess {
           process.kill(this.process.pid);
           this.process = undefined;
         } catch (error) {
-          exConsole.warn(error as string);
+          exConsole.warn(error);
         }
       } else {
         exConsole.warn('Failed to restart: Main process does not exist.');
@@ -53,7 +53,7 @@ export default class ElectronProcess {
         let message: string = data.toString();
 
         if (message.length < 10 && (!message || !message.replace(/\s/g, '')))
-          message = chalk.gray('null');
+          message = pc.gray('null');
         exConsole.info(message);
       });
       this.process.stderr.on('data', (data) => {
