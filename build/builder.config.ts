@@ -3,21 +3,21 @@
  * https://www.electron.build/configuration/configuration
  */
 
-import path from 'path';
-import { Configuration, CliOptions } from 'electron-builder';
-import buildConfig from './config';
+import path from 'path'
+import { Configuration, CliOptions } from 'electron-builder'
+import buildConfig from './config'
 
-const rootPath = process.cwd();
+const rootPath = process.cwd()
 
-const ICON_ICO = path.resolve(rootPath, 'assets/app-icon/icon/icon.ico');
-const ICON_ICNS = path.resolve(rootPath, 'assets/app-icon/icon/icon.icns');
+const ICON_ICO = path.resolve(rootPath, 'assets/app-icon/icon/icon.ico')
+const ICON_ICNS = path.resolve(rootPath, 'assets/app-icon/icon/icon.icns')
 
 const {
   npm_package_name: productName,
   npm_package_buildVersion: buildVersion,
   npm_package_appId: appId,
   npm_package_version: version,
-} = process.env;
+} = process.env
 
 const config: Configuration = {
   productName,
@@ -27,10 +27,7 @@ const config: Configuration = {
   asar: false,
   directories: {
     buildResources: 'assets',
-    output: path.join(
-      buildConfig.release,
-      `${productName}-release-${version}.${buildVersion}`
-    ),
+    output: path.join(buildConfig.release, `${productName}-release-${version}.${buildVersion}`),
   },
   win: {
     icon: ICON_ICO,
@@ -41,7 +38,7 @@ const config: Configuration = {
         repo: 'thi-online-electron-antd',
         protocol: 'https',
         owner: 'chinhpro2k',
-        token: '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',
+        token:'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',
         host: 'github.com',
         releaseType: 'draft',
       },
@@ -68,15 +65,15 @@ const config: Configuration = {
       repo: 'thi-online-electron-antd',
       protocol: 'https',
       owner: 'chinhpro2k',
-      token: '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',
+      token:'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',
       host: 'github.com',
       releaseType: 'draft',
     },
   ],
-};
+}
 
 const packageConfig: CliOptions = {
   config,
-};
+}
 
-export default packageConfig;
+export default packageConfig

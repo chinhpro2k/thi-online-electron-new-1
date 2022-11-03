@@ -1,4 +1,4 @@
-import * as api from '@/core/api';
+import * as api from '@/core/api'
 declare global {
   /**
    * 各种网络请求
@@ -6,10 +6,5 @@ declare global {
    * @source app/core/api
    * @define build/webpack.config.base.ts#L37
    */
-  const $api: typeof api;
-  namespace NodeJS {
-    interface Global {
-      __$api: typeof $api;
-    }
-  }
+  const $api: typeof api
 }

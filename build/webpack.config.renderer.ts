@@ -1,24 +1,24 @@
-import path from 'path';
-import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
+import path from 'path'
+import webpack, { Configuration } from 'webpack'
 
-import WebpackBar from 'webpackbar';
-import htmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import tsImportPluginFactory from 'ts-import-plugin';
+import WebpackBar from 'webpackbar'
+import htmlWebpackPlugin from 'html-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import tsImportPluginFactory from 'ts-import-plugin'
 
-import webpackConfigBase from './webpack.config.base';
-import buildConfig from './config';
+import webpackConfigBase from './webpack.config.base'
+import buildConfig from './config'
 
-const { dist, template, rendererSource: appPath } = buildConfig;
-const { NODE_ENV } = process.env;
+const { dist, template, rendererSource: appPath } = buildConfig
+const { NODE_ENV } = process.env
 
-const styleLoader = [{ loader: 'css-loader' }];
+const styleLoader = [{ loader: 'css-loader' }]
 
 if (NODE_ENV === 'development') {
-  styleLoader.unshift({ loader: 'css-hot-loader' }, { loader: 'style-loader' });
+  styleLoader.unshift({ loader: 'css-hot-loader' }, { loader: 'style-loader' })
 } else {
-  styleLoader.unshift({ loader: MiniCssExtractPlugin.loader });
+  styleLoader.unshift({ loader: MiniCssExtractPlugin.loader })
 }
 
 const tsLoader: webpack.RuleSetUseItem = {
@@ -32,7 +32,7 @@ const tsLoader: webpack.RuleSetUseItem = {
     //   module: 'es2015',
     // },
   },
-};
+}
 
 const webpackConfig: Configuration = {
   ...webpackConfigBase,
@@ -44,7 +44,7 @@ const webpackConfig: Configuration = {
 
   output: {
     path: path.join(dist, 'renderer'),
-    publicPath: './',
+    publicPath: NODE_ENV === 'development' ? '' : './',
     filename: '[name].js',
     chunkFilename: '[name].js',
   },
@@ -53,11 +53,11 @@ const webpackConfig: Configuration = {
     rules: [
       {
         test: /(?<!\.d)\.tsx?$/,
-        use: [tsLoader, { loader: 'eslint-loader' }],
+        use: [tsLoader],
       },
       {
         test: /\.jsx?$/,
-        use: [tsLoader, { loader: 'eslint-loader' }],
+        use: [tsLoader],
         exclude: /node_modules/,
       },
       {
@@ -78,13 +78,17 @@ const webpackConfig: Configuration = {
             options: {
               lessOptions: {
                 javascriptEnabled: true,
-                modifyVars: {
-                  'primary-color': '#CC0D00',
-                  'link-color': '#CC0D00',
-                  'border-radius-base': '2px',
-                },
               },
             },
+          },
+        ],
+      },
+      {
+        test: /\.(scss|sass)$/,
+        use: [
+          ...styleLoader,
+          {
+            loader: 'sass-loader',
           },
         ],
       },
@@ -94,21 +98,13 @@ const webpackConfig: Configuration = {
       },
       {
         test: /\.(png|jpe?g|gif|svg|swf|woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]',
+        type: 'asset/resource',
+        generator: {
+          filename: '[name].[ext]',
         },
       },
     ],
   },
-
-  // optimization: {
-  //   splitChunks: {
-  //     chunks: 'all',
-  //     name: 'bundle',
-  //   },
-  //   minimizer: [],
-  // },
 
   plugins: [
     ...(webpackConfigBase?.plugins ?? []),
@@ -120,18 +116,20 @@ const webpackConfig: Configuration = {
       filename: '[name].css',
       chunkFilename: '[name].css',
     }),
-    new WebpackBar({ name: 'Renderer' }),
-  ] as WebpackPluginInstance[],
-};
 
-if (NODE_ENV === 'development') {
-  webpackConfig.plugins?.push(
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
-  );
-} else if (NODE_ENV === 'production') {
-  // @ts-ignore
-  webpackConfig.plugins?.push(new OptimizeCSSAssetsPlugin());
+    new WebpackBar({ name: 'Renderer' }),
+  ],
 }
 
-export default webpackConfig;
+if (NODE_ENV === 'development') {
+  webpackConfig.devtool = 'eval-source-map' // 高质量 source map
+} else if (NODE_ENV === 'production') {
+  webpackConfig.optimization = {
+    minimizer: [
+      // https://github.com/webpack-contrib/css-minimizer-webpack-plugin
+      new CssMinimizerPlugin(),
+    ],
+  }
+}
+
+export default webpackConfig

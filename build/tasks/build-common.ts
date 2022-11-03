@@ -1,23 +1,20 @@
-import webpack, { Configuration } from 'webpack';
+import webpack, { Configuration } from 'webpack'
 
-import buildConfig from '../config';
+import buildConfig from '../config'
 
-const { env: envConfig } = buildConfig;
+const { env: envConfig } = buildConfig
 
 interface BuildConfig {
-  env: keyof typeof buildConfig.env;
-  webpackConfig: Configuration;
-  type: 'main' | 'renderer';
+  env: keyof typeof buildConfig.env
+  webpackConfig: Configuration
+  type: 'main' | 'renderer'
 }
 
-function build({
-  env,
-  webpackConfig,
-}: BuildConfig): Promise<typeof buildConfig.env['prod']> {
+function build({ env, webpackConfig }: BuildConfig): Promise<typeof buildConfig.env['prod']> {
   return new Promise((resolve, reject) => {
     webpack(webpackConfig, (err, stats) => {
-      if (err) throw err;
-      if (!stats) throw 'Webpack states error!';
+      if (err) throw err
+      if (!stats) throw 'Webpack states error!'
 
       process.stdout.write(
         stats.toString({
@@ -30,15 +27,15 @@ function build({
           children: false,
           modules: false,
         }) + '\n\n'
-      );
+      )
 
       if (stats.hasErrors()) {
-        reject(stats);
+        reject(stats)
       } else {
-        resolve(envConfig[env]);
+        resolve(envConfig[env])
       }
-    });
-  });
+    })
+  })
 }
 
-export default build;
+export default build

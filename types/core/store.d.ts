@@ -1,31 +1,29 @@
-import { AnyAction } from 'redux';
+import { AnyAction } from 'redux'
 
 declare global {
-  type StoreDatasKeys = keyof StoreDatas;
-  type StoreStateKeys = keyof StoreStates;
+  type StoreDatasKeys = keyof StoreDatas
+  type StoreStateKeys = keyof StoreStates
 
   type ActionFn = <StoreStates, T extends StoreDatasKeys>(
     data: StoreAction<T>['data'],
     state: StoreStates,
     action: StoreAction<T>
-  ) => { [key: string]: any };
+  ) => { [key: string]: any }
 
   interface AliasStates {
-    [key: string]: StoreStateKeys;
+    [key: string]: StoreStateKeys
   }
 
   interface StoreAction<K extends StoreDatasKeys> extends AnyAction {
-    type: K;
-    data: StoreDatas[K];
+    type: K
+    data: StoreDatas[K]
   }
 
-  type AsyncDispatch = (dispatch: StoreProps['dispatch']) => Promise<any>;
+  type AsyncDispatch = (dispatch: StoreProps['dispatch']) => Promise<any>
 
-  type Dispatch = <T extends StoreDatasKeys>(
-    options: StoreAction<T> | AsyncDispatch
-  ) => Promise<void> | void;
+  type Dispatch = <T extends StoreDatasKeys>(options: StoreAction<T> | AsyncDispatch) => Promise<void> | void
   interface StoreProps {
-    readonly dispatch: Dispatch;
+    readonly dispatch: Dispatch
   }
 
   /**
@@ -34,11 +32,5 @@ declare global {
    * @source app/core/store
    * @define build/webpack.config.base.ts#L39
    */
-  const $store: AppStore;
-
-  namespace NodeJS {
-    interface Global {
-      __$store: AppStore;
-    }
-  }
+  const $store: AppStore
 }
